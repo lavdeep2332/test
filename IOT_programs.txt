@@ -1,0 +1,168 @@
+1(i) LED/Buzzer ON for 1 sec after every 2 seconds
+
+int ledPin = 13; // Built-in LED
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(ledPin, HIGH);
+  delay(1000); // LED ON for 1 sec
+  digitalWrite(ledPin, LOW);
+  delay(2000); // Wait for 2 sec
+}
+
+
+1(ii) Push button or IR/LDR to turn ON LED
+
+int sensorPin = 2;  // Push button or IR/LDR
+int ledPin = 13;
+
+void setup() {
+  pinMode(sensorPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  if (digitalRead(sensorPin) == HIGH) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+}
+
+
+2(i) DHT11 Sensor – Temperature and Humidity
+#include "DHT.h"
+#define DHTPIN 2     
+#define DHTTYPE DHT11   
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  Serial.print("Humidity: "); Serial.print(h);
+  Serial.print(" %\tTemperature: "); Serial.print(t);
+  Serial.println(" *C");
+  delay(2000);
+}
+
+2(ii) OLED Display Temperature & Humidity
+
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <DHT.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+#define DHTPIN 2
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  dht.begin();
+  display.clearDisplay();
+}
+
+void loop() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 10);
+  display.print("Temp: "); display.print(t); display.println(" C");
+  display.print("Humidity: "); display.print(h); display.println(" %");
+  display.display();
+  delay(2000);
+}
+
+3 Motor control via Relay and Push Button
+
+int relayPin = 7;
+int buttonPin = 2;
+
+void setup() {
+  pinMode(relayPin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+}
+
+void loop() {
+  if (digitalRead(buttonPin) == HIGH) {
+    digitalWrite(relayPin, HIGH);
+  } else {
+    digitalWrite(relayPin, LOW);
+  }
+}
+
+4(i) Soil Moisture Sensor
+
+int soilPin = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int value = analogRead(soilPin);
+  Serial.print("Soil Moisture: ");
+  Serial.println(value);
+  delay(2000);
+}
+
+4(ii) LDR/Photo Sensor
+int ldrPin = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int lightLevel = analogRead(ldrPin);
+  Serial.print("Light Level: ");
+  Serial.println(lightLevel);
+  delay(1000);
+}
+
+5 Ultrasonic Sensor
+
+const int trigPin = 9;
+const int echoPin = 10;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  long duration = pulseIn(echoPin, HIGH);
+  float distance = duration * 0.034 / 2;
+
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  delay(1000);
+}
+
